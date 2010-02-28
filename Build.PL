@@ -17,6 +17,7 @@ my $build = $class->new(
     create_makefile_pl  => 'traditional',
     requires => {
         'perl' => '5.006',
+        'Config::General' => 0,
     },
     build_requires => {
         'Test::More' => 0.62,
