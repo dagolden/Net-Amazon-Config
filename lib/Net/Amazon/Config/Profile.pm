@@ -34,7 +34,7 @@ use Object::Tiny @attributes;
 
 sub new {
   my ($class, $first, @rest) = @_;
-  my @args = ref $first eq 'ARRAY' ? @$first : ($first,@rest);
+  my @args = ref $first eq 'ARRAY' ? (@$first) : ($first,@rest);
   my %args = Params::Validate::validate(@args, { map { $_ => 0 } @attributes });
   return bless \%args, $class;
 }
