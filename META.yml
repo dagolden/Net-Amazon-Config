@@ -3,7 +3,9 @@ abstract: 'Manage Amazon Web Services credentials'
 author:
   - 'David Golden <dagolden@cpan.org>'
 build_requires:
-  Test::More: 0.62
+  File::Find: 0
+  File::Spec: 3.31
+  Test::More: 0.88
 configure_requires:
   Module::Build: 0.36
 generated_by: 'Module::Build version 0.3603'
@@ -26,8 +28,13 @@ provides:
     file: lib/Net/Amazon/Config/Profile.pm
     version: 0.001
 requires:
-  Config::General: 0
-  perl: 5.006
+  Carp: 0
+  Config::Tiny: 2.12
+  Object::Tiny: 1.06
+  Params::Validate: 0.91
+  Path::Class: 0.17
+  constant: 1
+  perl: 0
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Net-Amazon-Config
   repository: http://github.com/dagolden/Net-Amazon-Config/

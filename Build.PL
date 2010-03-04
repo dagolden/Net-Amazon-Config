@@ -16,11 +16,18 @@ my $build = $class->new(
     create_readme => 1,
     create_makefile_pl  => 'traditional',
     requires => {
-        'perl' => '5.006',
-        'Config::General' => 0,
+        'perl' => 0, # not specified
+        'Carp' => 0,
+        'Config::Tiny' => 2.12,
+        'constant' => 1, # 1.00 in perl 5.00504; 1.02 in perl 5.006002; 1.17 in perl 5.008009; 1.18 is new
+        'Object::Tiny' => 1.06,
+        'Params::Validate' => 0.91,
+        'Path::Class' => 0.17,
     },
     build_requires => {
-        'Test::More' => 0.62,
+        'File::Find' => 0,
+        'File::Spec' => 3.31,
+        'Test::More' => 0.88,
     },
     meta_add            => { 
         no_index => { 
