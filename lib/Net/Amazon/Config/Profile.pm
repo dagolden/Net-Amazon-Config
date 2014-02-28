@@ -10,28 +10,28 @@ use Params::Validate ();
 my @attributes;
 
 BEGIN {
-  @attributes = qw(
-    profile_name
-    access_key_id
-    secret_access_key
-    certificate_file
-    private_key_file
-    ec2_keypair_name
-    ec2_keypair_file
-    cf_keypair_id
-    cf_private_key_file
-    aws_account_id
-    canonical_user_id
-  );
+    @attributes = qw(
+      profile_name
+      access_key_id
+      secret_access_key
+      certificate_file
+      private_key_file
+      ec2_keypair_name
+      ec2_keypair_file
+      cf_keypair_id
+      cf_private_key_file
+      aws_account_id
+      canonical_user_id
+    );
 }
 
 use Object::Tiny @attributes;
 
 sub new {
-  my ($class, $first, @rest) = @_;
-  my @args = ref $first eq 'ARRAY' ? (@$first) : ($first,@rest);
-  my %args = Params::Validate::validate(@args, { map { $_ => 0 } @attributes });
-  return bless \%args, $class;
+    my ( $class, $first, @rest ) = @_;
+    my @args = ref $first eq 'ARRAY' ? (@$first) : ( $first, @rest );
+    my %args = Params::Validate::validate( @args, { map { $_ => 0 } @attributes } );
+    return bless \%args, $class;
 }
 
 1;

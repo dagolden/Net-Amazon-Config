@@ -9,7 +9,7 @@ use Carp ();
 use Config::Tiny 2.12 ();
 use Net::Amazon::Config::Profile ();
 use Params::Validate 0.91 ();
-use Path::Class 0.17 ();
+use Path::Class 0.17      ();
 use Object::Tiny 1.06 qw(
   config_dir
   config_file
@@ -19,50 +19,49 @@ use Object::Tiny 1.06 qw(
 use constant IS_WIN32 => $^O eq 'MSWin32';
 
 sub _default_dir {
-  my $base = Path::Class::dir(IS_WIN32 ? $ENV{USERPROFILE} : $ENV{HOME});
-  return $base->subdir('.amazon')->absolute->stringify;
+    my $base = Path::Class::dir( IS_WIN32 ? $ENV{USERPROFILE} : $ENV{HOME} );
+    return $base->subdir('.amazon')->absolute->stringify;
 }
 
 sub new {
-  my $class = shift;
-  my %args = Params::Validate::validate( @_, {
-    config_dir => {
-      default => $ENV{NET_AMAZON_CONFIG_DIR} || _default_dir,
-    },
-    config_file => {
-      default => $ENV{NET_AMAZON_CONFIG} || 'profiles.conf',
+    my $class = shift;
+    my %args  = Params::Validate::validate(
+        @_,
+        {
+            config_dir  => { default => $ENV{NET_AMAZON_CONFIG_DIR} || _default_dir, },
+            config_file => { default => $ENV{NET_AMAZON_CONFIG}     || 'profiles.conf', }
+        }
+    );
+
+    if ( Path::Class::file( $args{config_file} )->is_absolute ) {
+        $args{config_path} = $args{config_file};
     }
-  });
+    else {
+        $args{config_path} =
+          Path::Class::dir( $args{config_dir} )->file( $args{config_file} );
+    }
 
-  if ( Path::Class::file($args{config_file})->is_absolute ) {
-    $args{config_path} = $args{config_file};
-  }
-  else {
-    $args{config_path} = 
-      Path::Class::dir($args{config_dir})->file($args{config_file});
-  }
-  
-  unless ( -r $args{config_path} ) {
-    die "Could not find readable file $args{config_path}";
-  }
+    unless ( -r $args{config_path} ) {
+        die "Could not find readable file $args{config_path}";
+    }
 
-  return bless \%args, $class;
+    return bless \%args, $class;
 }
 
 sub get_profile {
-  my ($self, $profile_name) = @_; 
-  my $config = Config::Tiny->read( $self->config_path );
-  
-  $profile_name = $config->{_}{default} unless defined $profile_name;
-  my $params = $config->{$profile_name}
-    or return;
+    my ( $self, $profile_name ) = @_;
+    my $config = Config::Tiny->read( $self->config_path );
 
-  $params->{profile_name} = $profile_name;
-  my $profile = eval { Net::Amazon::Config::Profile->new( $params ) };
-  if ($@) {
-    Carp::croak "Invalid profile: $@";
-  }
-  return $profile;
+    $profile_name = $config->{_}{default} unless defined $profile_name;
+    my $params = $config->{$profile_name}
+      or return;
+
+    $params->{profile_name} = $profile_name;
+    my $profile = eval { Net::Amazon::Config::Profile->new($params) };
+    if ($@) {
+        Carp::croak "Invalid profile: $@";
+    }
+    return $profile;
 }
 
 1;
